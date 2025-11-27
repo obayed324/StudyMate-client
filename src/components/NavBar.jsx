@@ -7,7 +7,7 @@ import { GoHomeFill } from "react-icons/go";
 import { FaUser, FaUserFriends } from "react-icons/fa";
 import { MdConnectWithoutContact } from "react-icons/md";
 import { IoLogIn, IoLogOut, IoPersonAddSharp } from "react-icons/io5";
-
+import { toast } from "react-toastify";
 const NavBar = () => {
   const { user, signOutUser } = useContext(AuthContext);
 
@@ -20,7 +20,15 @@ const NavBar = () => {
   }, [theme]);
 
   const handleTheme = (checked) => setTheme(checked ? "dark" : "light");
-
+  const handleLogout = () => {
+    signOutUser()
+      .then(() => {
+        toast.success("You have successfully logged out!");
+      })
+      .catch((err) => {
+        toast.error(err.message || "Logout failed!");
+      });
+  };
   return (
     <nav className=" shadow-md py-3 px-4 md:px-8 sticky top-0 z-50 rounded-full">
       <div className="max-w-8xl mx-auto flex justify-between items-center">
@@ -119,7 +127,7 @@ const NavBar = () => {
               {/* Logout Button */}
               <li className="px-4 py-2">
                 <button
-                  onClick={signOutUser}
+                  onClick={handleLogout}
                   className="btn w-full bg-red-500 hover:bg-red-600 text-white font-semibold rounded-full transition-transform duration-200 transform hover:scale-105"
                 >
                   <IoLogOut /> Logout
