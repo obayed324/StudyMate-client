@@ -4,17 +4,48 @@ import Home from "../Pages/Home/Home";
 import AuthLayout from "../Layouts/AuthLayout";
 import Registration from "../Pages/Auth/Registration";
 import Login from "../Pages/Auth/Login";
+import FindAllPartners from "../Pages/FindAllPartners/FindAllPartners";
+import PartnerDetails from "../Pages/PartnerDetails/PartnerDetails";
+import PrivateRoute from "./PrivateRoute";
+
+
+const allPartnersLoader = async () => {
+  const res = await fetch('http://localhost:3000/partners');
+  return res.json();
+};
+
+
+const partnerDetailsLoader = async ({ params }) => {
+  const res = await fetch(`http://localhost:3000/partners/${params.id}`);
+  return res.json();
+};
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomeLayOut></HomeLayOut>,
-    children:[
+    element: <HomeLayOut />,
+    children: [
       {
-        path:"/",
-        element:<Home></Home>
-      }
-    ]
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/allPartner",
+        element: (
+          <FindAllPartners />
+        ),
+        loader: allPartnersLoader
+      },
+      {
+        path: "/partner/:id",
+        element: (
+          <PrivateRoute>
+            <PartnerDetails />
+          </PrivateRoute>
+        ),
+        loader: partnerDetailsLoader
+      },
+    ],
   },
   {
     path: "/auth",
@@ -22,16 +53,12 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/auth/login",
-        element: <Login></Login>
+        element: <Login />,
       },
       {
         path: "/auth/register",
-        element: <Registration></Registration>
+        element: <Registration />,
       },
-      // {
-      //   path:"/auth/forget-password",
-      //   element:<ForgetPassword></ForgetPassword>
-      // }
-    ]
+    ],
   },
 ]);

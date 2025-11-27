@@ -5,25 +5,23 @@ import { IoLogoGoogle } from "react-icons/io5";
 import { AuthContext } from "../../context/AuthContext";
 
 const Login = () => {
-  const { signInUser, signInWithGoogle } = useContext(AuthContext); // ✅ Use correct functions
+  const { signInUser, signInWithGoogle } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/"; // redirect here after login
 
   const [loading, setLoading] = useState(false);
 
-  // ✅ Handle Email/Password login
   const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);
-
     const email = e.target.email.value;
     const password = e.target.password.value;
 
     signInUser(email, password)
       .then(() => {
         toast.success("Login successful!");
-        navigate(from, { replace: true });
+        navigate(from, { replace: true }); // ✅ redirect to original page
       })
       .catch((err) => {
         toast.error(err.message || "Login failed!");
@@ -31,13 +29,12 @@ const Login = () => {
       .finally(() => setLoading(false));
   };
 
-  // ✅ Handle Google login
   const handleGoogleLogin = () => {
     setLoading(true);
     signInWithGoogle()
       .then(() => {
         toast.success("Logged in with Google!");
-        navigate(from, { replace: true });
+        navigate(from, { replace: true }); // ✅ redirect to original page
       })
       .catch((err) => {
         toast.error(err.message || "Google login failed!");
@@ -48,7 +45,6 @@ const Login = () => {
   return (
     <div className="min-h-screen flex justify-center items-center px-4">
       <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-8">
-
         <h2 className="text-3xl font-bold text-center mb-6">
           Login to <span className="text-blue-600">StudyMate</span>
         </h2>
@@ -107,4 +103,3 @@ const Login = () => {
 };
 
 export default Login;
-

@@ -1,17 +1,15 @@
-import { Link, NavLink } from "react-router"; // react-router-dom for web routing
+import { Link, NavLink } from "react-router"; 
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-
-// Icons
 import { GoHomeFill } from "react-icons/go";
 import { FaUser, FaUserFriends } from "react-icons/fa";
 import { MdConnectWithoutContact } from "react-icons/md";
 import { IoLogIn, IoLogOut, IoPersonAddSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
+
 const NavBar = () => {
   const { user, signOutUser } = useContext(AuthContext);
 
-  // Theme state
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
   useEffect(() => {
@@ -20,17 +18,21 @@ const NavBar = () => {
   }, [theme]);
 
   const handleTheme = (checked) => setTheme(checked ? "dark" : "light");
+
   const handleLogout = () => {
     signOutUser()
-      .then(() => {
-        toast.success("You have successfully logged out!");
-      })
-      .catch((err) => {
-        toast.error(err.message || "Logout failed!");
-      });
+      .then(() => toast.success("You have successfully logged out!"))
+      .catch((err) => toast.error(err.message || "Logout failed!"));
   };
+
+  // Utility for active link classes
+  const activeClass = ({ isActive }) =>
+    `flex items-center gap-1 transition-colors duration-200 ${
+      isActive ? "text-blue-600 font-semibold" : "hover:text-blue-600"
+    }`;
+
   return (
-    <nav className=" shadow-md py-3 px-4 md:px-8 sticky top-0 z-50 rounded-full">
+    <nav className="shadow-md py-3 px-4 md:px-8 sticky top-0 z-50 rounded-full bg-white">
       <div className="max-w-8xl mx-auto flex justify-between items-center">
 
         {/* Logo */}
@@ -44,24 +46,24 @@ const NavBar = () => {
         {/* Desktop Links */}
         <ul className="hidden md:flex gap-6 items-center font-medium">
           <li>
-            <NavLink to="/" className="flex items-center gap-1 hover:text-blue-600">
+            <NavLink to="/" className={activeClass}>
               <GoHomeFill className="inline-block" /> Home
             </NavLink>
           </li>
           <li>
-            <NavLink to="/find-partners" className="flex items-center gap-1 hover:text-blue-600">
+            <NavLink to="/allPartner" className={activeClass}>
               <FaUserFriends className="inline-block" /> Find Partners
             </NavLink>
           </li>
           {user && (
             <>
               <li>
-                <NavLink to="/create-profile" className="flex items-center gap-1 hover:text-blue-600">
+                <NavLink to="/create-profile" className={activeClass}>
                   <IoPersonAddSharp className="inline-block" /> Create Partner Profile
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/my-connections" className="flex items-center gap-1 hover:text-blue-600">
+                <NavLink to="/my-connections" className={activeClass}>
                   <MdConnectWithoutContact className="inline-block" /> My Connections
                 </NavLink>
               </li>
@@ -71,7 +73,6 @@ const NavBar = () => {
 
         {/* Right Side */}
         <div className="flex items-center gap-3">
-
           {/* Theme Toggle */}
           <input
             type="checkbox"
@@ -90,51 +91,52 @@ const NavBar = () => {
                 Register
               </Link>
             </>
-          ) : (<div className="dropdown dropdown-end relative">
-            {/* Avatar */}
-            <label
-              tabIndex={0}
-              className="btn btn-ghost btn-circle avatar border border-gray-300 hover:border-blue-400 transition-colors duration-300"
-            >
-              <div className="w-10 h-10 rounded-full overflow-hidden">
-                <img
-                  src={user.photoURL || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
-                  alt={user.displayName || "User"}
-                  className="object-cover w-full h-full"
-                  onError={(e) => e.currentTarget.src = "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
-                />
-              </div>
-            </label>
+          ) : (
+            <div className="dropdown dropdown-end relative">
+              {/* Avatar */}
+              <label
+                tabIndex={0}
+                className="btn btn-ghost btn-circle avatar border border-gray-300 hover:border-blue-400 transition-colors duration-300"
+              >
+                <div className="w-10 h-10 rounded-full overflow-hidden">
+                  <img
+                    src={user.photoURL || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
+                    alt={user.displayName || "User"}
+                    className="object-cover w-full h-full"
+                    onError={(e) => (e.currentTarget.src = "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp")}
+                  />
+                </div>
+              </label>
 
-            {/* Dropdown Menu */}
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-xl mt-3 shadow-xl border w-64 overflow-hidden animate-slide-down"
-            >
-              {/* User Info */}
-              <li className="px-4 py-3 border-b bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
-                <p className="font-semibold truncate" title={user.displayName}>{user.displayName}</p>
-                <p className="text-xs text-gray-500 truncate" title={user.email}>{user.email}</p>
-              </li>
+              {/* Dropdown Menu */}
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content bg-base-100 rounded-xl mt-3 shadow-xl border w-64 overflow-hidden animate-slide-down"
+              >
+                {/* User Info */}
+                <li className="px-4 py-3 border-b bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                  <p className="font-semibold truncate" title={user.displayName}>{user.displayName}</p>
+                  <p className="text-xs text-gray-500 truncate" title={user.email}>{user.email}</p>
+                </li>
 
-              {/* Profile Link */}
-              <li className="px-4 py-2 hover:bg-blue-50 transition-colors duration-200 rounded-md mx-2 my-1">
-                <Link to="/profile" className="flex items-center gap-2 text-gray-700 hover:text-blue-600">
-                  <FaUser /> Profile
-                </Link>
-              </li>
+                {/* Profile Link */}
+                <li className="px-4 py-2 hover:bg-blue-50 transition-colors duration-200 rounded-md mx-2 my-1">
+                  <Link to="/profile" className="flex items-center gap-2 text-gray-700 hover:text-blue-600">
+                    <FaUser /> Profile
+                  </Link>
+                </li>
 
-              {/* Logout Button */}
-              <li className="px-4 py-2">
-                <button
-                  onClick={handleLogout}
-                  className="btn w-full bg-red-500 hover:bg-red-600 text-white font-semibold rounded-full transition-transform duration-200 transform hover:scale-105"
-                >
-                  <IoLogOut /> Logout
-                </button>
-              </li>
-            </ul>
-          </div>
+                {/* Logout Button */}
+                <li className="px-4 py-2">
+                  <button
+                    onClick={handleLogout}
+                    className="btn w-full bg-red-500 hover:bg-red-600 text-white font-semibold rounded-full transition-transform duration-200 transform hover:scale-105"
+                  >
+                    <IoLogOut /> Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
           )}
 
           {/* Mobile Dropdown */}
@@ -146,18 +148,18 @@ const NavBar = () => {
             </label>
             <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-50 p-3 shadow bg-base-100 rounded-xl w-56 right-0 absolute border">
               <li>
-                <NavLink to="/" className="flex items-center gap-2"><GoHomeFill /> Home</NavLink>
+                <NavLink to="/" className={activeClass}><GoHomeFill /> Home</NavLink>
               </li>
               <li>
-                <NavLink to="/find-partners" className="flex items-center gap-2"><FaUserFriends /> Find Partners</NavLink>
+                <NavLink to="/allPartner" className={activeClass}><FaUserFriends /> Find Partners</NavLink>
               </li>
               {user && (
                 <>
                   <li>
-                    <NavLink to="/create-profile" className="flex items-center gap-2"><IoPersonAddSharp /> Create Partner Profile</NavLink>
+                    <NavLink to="/create-profile" className={activeClass}><IoPersonAddSharp /> Create Partner Profile</NavLink>
                   </li>
                   <li>
-                    <NavLink to="/my-connections" className="flex items-center gap-2"><MdConnectWithoutContact /> My Connections</NavLink>
+                    <NavLink to="/my-connections" className={activeClass}><MdConnectWithoutContact /> My Connections</NavLink>
                   </li>
                 </>
               )}
