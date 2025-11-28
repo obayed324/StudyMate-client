@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { PartnerCard } from "./PartnerCard";
-import { AuthContext } from "../context/AuthContext";
 
 const TopPartnersSection = () => {
-  const { user } = useContext(AuthContext);
   const [partners, setPartners] = useState([]);
 
   useEffect(() => {
@@ -25,7 +23,11 @@ const TopPartnersSection = () => {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {partners.map((partner) => (
-          <PartnerCard key={partner._id} partner={partner} />
+          <PartnerCard
+            key={partner._id}
+            partner={partner}
+            redirectPath={`/partner/${partner._id}`} // send desired redirect path
+          />
         ))}
       </div>
     </div>

@@ -8,7 +8,7 @@ const Login = () => {
   const { signInUser, signInWithGoogle } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/"; // redirect here after login
+  const from = location.state?.from || "/"; 
 
   const [loading, setLoading] = useState(false);
 
@@ -21,7 +21,7 @@ const Login = () => {
     signInUser(email, password)
       .then(() => {
         toast.success("Login successful!");
-        navigate(from, { replace: true }); // ✅ redirect to original page
+        navigate(from, { replace: true }); 
       })
       .catch((err) => {
         toast.error(err.message || "Login failed!");

@@ -18,8 +18,8 @@ export const PartnerCard = ({ partner }) => {
 
   const handleViewProfile = () => {
     if (!user) {
-      // Redirect to login if not logged in
-      navigate("/login");
+      // Redirect to login and pass the target path in state
+      navigate("/auth/login", { state: { from: `/partner/${_id}` } });
     } else {
       // Go to partner details page
       navigate(`/partner/${_id}`);
