@@ -9,6 +9,7 @@ import PartnerDetails from "../Pages/PartnerDetails/PartnerDetails";
 import PrivateRoute from "./PrivateRoute";
 import CreatePartner from "../Pages/CreatePartner/CreatePartner";
 import MyConnections from "../Pages/MyConnections/MyConnections";
+import ErrorPage from "../components/ErrorPage";
 
 
 const allPartnersLoader = async () => {
@@ -80,5 +81,9 @@ export const router = createBrowserRouter([
         element: <Registration />,
       },
     ],
+  },
+  {
+    path: "/*",
+    element: <ErrorPage></ErrorPage>
   },
 ]);
