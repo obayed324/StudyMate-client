@@ -15,7 +15,7 @@ const MyConnections = () => {
 
             try {
                 const token = await user.getIdToken();
-                const res = await fetch("http://localhost:3000/my-requests", {
+                const res = await fetch("https://study-mate-server-steel-nine.vercel.app/my-requests", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await res.json();
@@ -37,7 +37,7 @@ const MyConnections = () => {
 
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`http://localhost:3000/my-requests/${id}`, {
+            const res = await fetch(`https://study-mate-server-steel-nine.vercel.app/my-requests/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -61,7 +61,7 @@ const MyConnections = () => {
         // ✨ Destructure _id so it is NOT sent to MongoDB
         const { _id, ...updateFields } = editData;
 
-        const res = await fetch(`http://localhost:3000/my-requests/${_id}`, {
+        const res = await fetch(`https://study-mate-server-steel-nine.vercel.app/my-requests/${_id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

@@ -13,13 +13,21 @@ import ErrorPage from "../components/ErrorPage";
 
 
 const allPartnersLoader = async () => {
-  const res = await fetch('http://localhost:3000/partners');
-  return res.json();
+  try {
+    const res = await fetch("https://study-mate-server-steel-nine.vercel.app/partners");
+    const data = await res.json();
+    // ensure we return an array
+    return data.success ? data.partners : [];
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
 };
 
 
+
 const partnerDetailsLoader = async ({ params }) => {
-  const res = await fetch(`http://localhost:3000/partners/${params.id}`);
+  const res = await fetch(`https://study-mate-server-steel-nine.vercel.app/partners/${params.id}`);
   return res.json();
 };
 

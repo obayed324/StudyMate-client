@@ -6,7 +6,7 @@ const TopPartnersSection = () => {
 
   useEffect(() => {
     // Fetch top-rated partners (public endpoint)
-    fetch("http://localhost:3000/partners/top-rated")
+    fetch("https://study-mate-server-steel-nine.vercel.app/partners/top-rated")
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setPartners(data.partners);

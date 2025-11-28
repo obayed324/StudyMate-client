@@ -17,7 +17,7 @@ const PartnerDetails = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `http://localhost:3000/partners/${partner._id}/request`,
+        `https://study-mate-server-steel-nine.vercel.app/partners/${partner._id}/request`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -32,7 +32,7 @@ const CreatePartner = () => {
       setLoading(true);
       const token = await user.getIdToken();
 
-      const res = await fetch("http://localhost:3000/partners", {
+      const res = await fetch("https://study-mate-server-steel-nine.vercel.app/partners", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

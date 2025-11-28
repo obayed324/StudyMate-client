@@ -1,24 +1,35 @@
 import { useLoaderData } from "react-router";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PartnerCard } from "../../components/PartnerCard";
 
 const FindAllPartners = () => {
-  const data = useLoaderData();
-  const [partners, setPartners] = useState(data);
-  const [loading, setLoading] = useState(false);
+  const initialData = useLoaderData();
+  const [partners, setPartners] = useState([]);
+  const [loading, setLoading] = useState(true); // show spinner on first load
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    const search_text = e.target.search.value;
+  // Handle initial loader data
+  useEffect(() => {
+    setPartners(initialData);
+    setLoading(false);
+  }, [initialData]);
+
+  const fetchPartners = async (search = "", sort = "") => {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        `http://localhost:3000/partners?search=${search_text}`
-      );
+      let url = `https://study-mate-server-steel-nine.vercel.app/partners?`;
+      if (search) url += `search=${search}&`;
+      if (sort) url += `sort=${sort}&`;
+
+      const res = await fetch(url);
+
+      // Force visible spinner during slow network
+      await new Promise((r) => setTimeout(r, 800));
+
       const data = await res.json();
-      setPartners(data);
+
+      if (data.success) setPartners(data.partners);
+      else setPartners([]);
     } catch (err) {
       console.error(err);
     } finally {
@@ -26,13 +37,14 @@ const FindAllPartners = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const search_text = e.target.search.value;
+    fetchPartners(search_text);
+  };
+
   const handleSort = (field) => {
-    const sorted = [...partners].sort((a, b) => {
-      if (field === "rating") return b.rating - a.rating;
-      if (field === "experience") return b.experienceLevel.localeCompare(a.experienceLevel);
-      return 0;
-    });
-    setPartners(sorted);
+    fetchPartners("", field);
   };
 
   return (
@@ -42,14 +54,29 @@ const FindAllPartners = () => {
         Search and explore available study partners.
       </p>
 
-      <form onSubmit={handleSearch} className="flex justify-between mb-6 gap-4">
-        <button
-          type="button"
-          onClick={() => handleSort("rating")}
-          className="btn btn-sm btn-secondary rounded-full"
-        >
-          Sort by Rating
-        </button>
+      <form
+        onSubmit={handleSearch}
+        className="flex justify-between mb-6 gap-4 items-center"
+      >
+        {/* Left side: Sort buttons */}
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => handleSort("rating")}
+            className="btn btn-sm btn-secondary rounded-full"
+          >
+            Sort by Rating
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSort("experience")}
+            className="btn btn-sm btn-secondary rounded-full"
+          >
+            Sort by Experience
+          </button>
+        </div>
+
+        {/* Right side: Search input */}
         <label className="flex items-center w-full max-w-md rounded-full border border-gray-300 overflow-hidden">
           <input
             type="search"
@@ -66,11 +93,18 @@ const FindAllPartners = () => {
         </label>
       </form>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {partners.map((partner) => (
-          <PartnerCard key={partner._id} partner={partner} />
-        ))}
-      </div>
+      {/* ⬇️ CENTERED LOADING SPINNER ⬇️ */}
+      {loading ? (
+        <div className="flex justify-center items-center h-[60vh]">
+          <span className="loading loading-bars loading-xl"></span>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {partners.map((partner) => (
+            <PartnerCard key={partner._id} partner={partner} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
