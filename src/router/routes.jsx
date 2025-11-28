@@ -7,6 +7,8 @@ import Login from "../Pages/Auth/Login";
 import FindAllPartners from "../Pages/FindAllPartners/FindAllPartners";
 import PartnerDetails from "../Pages/PartnerDetails/PartnerDetails";
 import PrivateRoute from "./PrivateRoute";
+import CreatePartner from "../Pages/CreatePartner/CreatePartner";
+import MyConnections from "../Pages/MyConnections/MyConnections";
 
 
 const allPartnersLoader = async () => {
@@ -45,6 +47,24 @@ export const router = createBrowserRouter([
         ),
         loader: partnerDetailsLoader
       },
+      {
+        path: "/create-profile",
+        element: (
+          <PrivateRoute>
+            <CreatePartner />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/my-connections",
+        element: (
+          <PrivateRoute>
+            <MyConnections />
+          </PrivateRoute>
+        ),
+      }
+
+
     ],
   },
   {
