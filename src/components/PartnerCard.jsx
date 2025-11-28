@@ -1,6 +1,11 @@
-import { Link } from "react-router";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router";
+import { AuthContext } from "../context/AuthContext";
 
 export const PartnerCard = ({ partner }) => {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const {
     _id,
     name,
@@ -10,6 +15,16 @@ export const PartnerCard = ({ partner }) => {
     experienceLevel,
     rating,
   } = partner;
+
+  const handleViewProfile = () => {
+    if (!user) {
+      // Redirect to login if not logged in
+      navigate("/login");
+    } else {
+      // Go to partner details page
+      navigate(`/partner/${_id}`);
+    }
+  };
 
   return (
     <div className="card bg-white shadow-lg rounded-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
@@ -31,12 +46,12 @@ export const PartnerCard = ({ partner }) => {
           ⭐ {rating?.toFixed(1) || "N/A"}
         </div>
         <div className="card-actions mt-4">
-          <Link
-            to={`/partner/${_id}`}
-            className="btn btn-sm btn-primary w-full rounded-full hover:bg-linear-to-r hover:from-pink-500 hover:to-red-500 text-white"
+          <button
+            onClick={handleViewProfile}
+            className="btn btn-sm btn-primary w-full rounded-full hover:bg-linear-to-r from-pink-500 to-red-500 text-white"
           >
             View Profile
-          </Link>
+          </button>
         </div>
       </div>
     </div>
